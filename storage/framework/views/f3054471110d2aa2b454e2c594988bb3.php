@@ -1,1 +1,11 @@
-bonjour la team<?php /**PATH C:\Users\Nathan\Documents\Cours\BUT_2\Photos\resources\views/index.blade.php ENDPATH**/ ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    lol
+</body>
+</html><?php /**PATH C:\Users\Nathan\Documents\Cours\BUT_2\Photos\resources\views/index.blade.php ENDPATH**/ ?>

@@ -6,6 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    lol
+    <h1> Albums photos </h1>
 </body>
 </html>
