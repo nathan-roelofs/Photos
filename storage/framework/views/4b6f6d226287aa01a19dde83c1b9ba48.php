@@ -1,0 +1,1 @@
+bonjour<?php /**PATH /Users/Manon/Photos/resources/views/index.blade.php ENDPATH**/ ?>
