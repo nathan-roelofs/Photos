@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class FirstController extends Controller
 {
-                function index() {
-                return view("index");
-            }
+    function index() {
+        return view("index");
+    }
 }
