@@ -1,1 +1,1 @@
-bonjour<?php /**PATH C:\Users\Nathan\Documents\Cours\BUT_2\Photos\resources\views/index.blade.php ENDPATH**/ ?>
+bonjour la team<?php /**PATH C:\Users\Nathan\Documents\Cours\BUT_2\Photos\resources\views/index.blade.php ENDPATH**/ ?>
