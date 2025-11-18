@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestionnaire d'albums - Accueil</title>
 </head>
 <body>
-    <h1> Albums photos </h1>
+    <header>
+        <h1>Albums photos</h1>
+    </header>
+
+    <main>
+        <!-- Contenu principal : liste d'albums, formulaires, etc. -->
+    </main>
+s
+    <footer>
+        <!-- Pied de page -->
+    </footer>
 </body>
 </html>
