@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FirstController;
+use App\Http\Controllers\PhotoController;
+use App\Models\Photo;
+use App\Models\Album;
 
 
 /*
@@ -16,7 +19,12 @@ use App\Http\Controllers\FirstController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // load albums and their photos based on database dump structure
+    $albums = Album::with('photos')->orderBy('id','desc')->get();
+    return view('index', compact('albums'));
 });
 
-Route::get("/", [FirstController::class, 'index']);
+// photo persistence routes (store / destroy)
+Route::post('/photos', [PhotoController::class, 'store'])->name('photos.store');
+Route::get('/photos/{photo}/image', [PhotoController::class, 'image'])->name('photos.image');
+Route::delete('/photos/{photo}', [PhotoController::class, 'destroy'])->name('photos.destroy');
