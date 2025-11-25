@@ -4,7 +4,58 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestionnaire d'albums - Accueil</title>
-    <link rel="stylesheet" href="/resources/css/app.css">
+    <style>
+    :root{
+        --accent:#ef4444;
+        --muted:#6b7280;
+        --card-bg:#fff;
+        --page-bg:#f9fafb;
+    }
+    html,body{height:100%;}
+    
+
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;background:var(--page-bg);color:#111;margin:0;padding:0}
+
+    header{padding:20px 16px;border-bottom:1px solid #eee;background:#fff}
+    header h1{margin:0;font-size:20px;font-weight:600}
+
+    main{padding:24px 12px}
+
+    .controls{max-width:900px;margin:1rem auto;padding:1rem;display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .controls label{display:block;font-size:14px;margin-bottom:6px}
+    .controls input[type='file']{display:block}
+    .controls input[type='url']{flex:1;padding:.5rem;border:1px solid #ddd;border-radius:6px}
+    .controls .btn{padding:.5rem .75rem;background:var(--accent);color:white;border-radius:6px;border:none;cursor:pointer}
+
+    .gallery--columns{max-width:1100px;margin:0 auto;padding:1rem;column-gap:16px}
+    .gallery--columns{column-count:3}
+
+    /* masonry flow: cards must be inline-block and avoid column breaks */
+    .card{position:relative;display:inline-block;width:100%;break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 16px;border-radius:8px;overflow:hidden;background:var(--card-bg);box-shadow:0 6px 18px rgba(16,24,40,0.06)}
+    .card img{width:100%;height:auto;display:block}
+    .card figcaption{padding:.5rem;font-size:.95rem;color:var(--accent)}
+    .remove-btn{position:absolute;right:8px;top:8px;background:rgba(0,0,0,0.55);color:#fff;border:none;padding:.25rem .4rem;border-radius:6px;cursor:pointer}
+
+    .note{max-width:1100px;margin:0 auto;padding:0 1rem 2rem;color:var(--muted);font-size:.9rem}
+
+    footer{padding:16px;color:var(--muted);text-align:center}
+
+    .control-col{flex:1;min-width:240px}
+    .control-row{display:flex;gap:.5rem;align-items:center}
+
+    .control-label{width:120px;display:inline-block}
+
+    .card figcaption{color:#111}
+
+    @media (max-width:1100px){
+        .gallery--columns{column-count:2}
+    }
+
+    @media (max-width:680px){
+        .gallery--columns{column-count:1}
+    }
+
+    </style>
 </head>
 <body>
     <header>
@@ -12,112 +63,94 @@
     </header>
 
     <main>
-        <!-- Controls: add images from files or by URL -->
+        <!-- Controls: add images from files or by URL (server-side) -->
         <section class="controls">
-            <div class="control-col">
+            <form action="{{ route('photos.store') }}" method="POST" enctype="multipart/form-data" class="control-col">
+                @csrf
                 <label for="fileInput">Ajouter des images (depuis votre ordinateur)</label>
-                <input id="fileInput" type="file" accept="image/*" multiple>
-            </div>
+                <input id="fileInput" name="file[]" type="file" accept="image/*" multiple>
+                <div style="margin-top:.5rem;display:flex;gap:.5rem;align-items:center">
+                    <select name="album_id" aria-label="Choisir album" required style="padding:.4rem;border:1px solid #ddd;border-radius:6px">
+                        <option value="">— Aucun album —</option>
+                        @if(isset($albums))
+                            @foreach($albums as $albumOption)
+                                <option value="{{ $albumOption->id }}">{{ $albumOption->titre }} ({{ $albumOption->photos->count() }})</option>
+                            @endforeach
+                        @endif
+                    </select>
+                    <button type="submit" class="btn">Téléverser</button>
+                </div>
+            </form>
 
-            <div class="control-col control-row">
+            <form action="{{ route('photos.store') }}" method="POST" class="control-col control-row">
+                @csrf
                 <label for="urlInput" class="control-label">Ajouter par URL</label>
-                <input id="urlInput" type="url" placeholder="https://example.com/photo.jpg">
-                <button id="addUrlBtn" class="btn">Ajouter</button>
-            </div>
+                <input id="urlInput" name="url" type="url" placeholder="https://example.com/photo.jpg">
+                <select name="album_id" aria-label="Choisir album (URL)" required style="padding:.4rem;border:1px solid #ddd;border-radius:6px">
+                    <option value="">— Aucun album —</option>
+                    @if(isset($albums))
+                        @foreach($albums as $albumOption)
+                            <option value="{{ $albumOption->id }}">{{ $albumOption->titre }} ({{ $albumOption->photos->count() }})</option>
+                        @endforeach
+                    @endif
+                </select>
+                <button type="submit" class="btn">Ajouter</button>
+            </form>
         </section>
+
+        @if(session('success'))
+            <div style="max-width:1100px;margin:0 auto;padding:0 1rem 1rem;color:green;">{{ session('success') }}</div>
+        @endif
+
+        @if($errors->any())
+            <div style="max-width:1100px;margin:0 auto;padding:0 1rem 1rem;color:#b91c1c;">{{ $errors->first() }}</div>
+        @endif
 
         <!-- Gallery grid -->
         <section id="gallery" aria-label="Galerie">
-            <!-- Preloaded images (if present). These will be removable by the user. -->
-            <figure class="card" data-id="1">
-                <img src="/images/accueil.jpg" alt="accueil">
-                <figcaption>Image d'accueil</figcaption>
-                <button class="remove-btn" aria-label="Supprimer image">Suppr</button>
-            </figure>
+            <!-- Albums + their photos (DB) -->
+                @if(isset($albums) && $albums->count())
+                    @foreach($albums as $album)
+                        <section style="max-width:1100px;margin:0 auto 2rem;padding:0 1rem;">
+                            <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+                                <div>
+                                    <h2 style="margin:0;font-size:1.1rem">{{ $album->titre }}</h2>
+                                    <div style="font-size:.9rem;color:var(--muted)">Créé: {{ $album->creation }} — {{ $album->photos->count() }} photos</div>
+                                </div>
+                                <div>
+                                    <!-- optional album actions could go here -->
+                                </div>
+                            </header>
 
-            <figure class="card" data-id="2">
-                <img src="/images/accueil2.jpg" alt="accueil2">
-                <figcaption>Image d'accueil 2</figcaption>
-                <button class="remove-btn" aria-label="Supprimer image">Suppr</button>
-            </figure>
+                            @if($album->photos->isEmpty())
+                                <div class="note">Aucune photo dans cet album.</div>
+                            @else
+                                <div class="gallery--columns">
+                                    @foreach($album->photos as $photo)
+                                        <figure class="card" data-id="{{ $photo->id }}">
+                                            <img src="{{ $photo->data ? route('photos.image', $photo) : $photo->url }}" alt="{{ $photo->titre }}">
+                                            <figcaption>{{ $photo->titre }}</figcaption>
+
+                                            <form style="position:absolute;right:8px;top:8px;" method="POST" action="{{ route('photos.destroy', $photo) }}" onsubmit="return confirm('Supprimer cette photo ?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="remove-btn" type="submit">Suppr</button>
+                                            </form>
+                                        </figure>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </section>
+                    @endforeach
+                @else
+                    <div class="note">Aucun album trouvé dans la base.</div>
+                @endif
         </section>
 
-        <!-- Small note: this is purely client-side; images won't be saved server-side in this prototype -->
-        <div class="note">Note: ici l'ajout et la suppression sont gérés côté client (prévisualisation). Pour conserver les images, il faut implémenter un upload serveur.</div>
+        <!-- Server-side note: uploads persist to database/storage -->
+        <div class="note">Note: les formulaires enregistrent les photos dans la base (upload vers storage ou ajout par URL). Utilisez le select pour associer une photo à un album.</div>
 
-        <script>
-            // Simple client-side gallery: add images from file input or URL and remove them from DOM.
-            (function(){
-                const fileInput = document.getElementById('fileInput');
-                const urlInput = document.getElementById('urlInput');
-                const addUrlBtn = document.getElementById('addUrlBtn');
-                const gallery = document.getElementById('gallery');
-                let nextId = 3;
-
-                function addImageElement(src, alt){
-                    const id = nextId++;
-                    const fig = document.createElement('figure');
-                    fig.className = 'card';
-                    fig.setAttribute('data-id', id);
-                    // rely on .card class for layout and visuals
-
-                    const img = document.createElement('img');
-                    img.src = src;
-                    img.alt = alt || 'image';
-                    // rely on .card img styling from app.css
-
-                    const caption = document.createElement('figcaption');
-                    // rely on figcaption styles from app.css
-                    caption.textContent = alt || 'Nouvelle image';
-
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'remove-btn';
-                    removeBtn.setAttribute('aria-label','Supprimer image');
-                    // rely on .remove-btn styles from app.css
-                    removeBtn.textContent = 'Suppr';
-
-                    removeBtn.addEventListener('click', function(){
-                        fig.remove();
-                    });
-
-                    fig.appendChild(img);
-                    fig.appendChild(caption);
-                    fig.appendChild(removeBtn);
-                    gallery.appendChild(fig);
-                    // scroll to new image
-                    fig.scrollIntoView({behavior:'smooth', block:'center'});
-                }
-
-                fileInput.addEventListener('change', function(ev){
-                    const files = Array.from(ev.target.files || []);
-                    files.forEach(file => {
-                        if(!file.type.startsWith('image/')) return;
-                        const reader = new FileReader();
-                        reader.onload = e => addImageElement(e.target.result, file.name);
-                        reader.readAsDataURL(file);
-                    });
-                    // clear input to allow re-upload same file if needed
-                    fileInput.value = '';
-                });
-
-                addUrlBtn.addEventListener('click', function(){
-                    const url = urlInput.value.trim();
-                    if(!url) return;
-                    // basic validation
-                    try{ new URL(url); } catch(e){ alert('URL invalide'); return; }
-                    addImageElement(url, url.split('/').pop());
-                    urlInput.value = '';
-                });
-
-                // delegate remove buttons for initial elements
-                gallery.addEventListener('click', function(e){
-                    if(e.target && e.target.classList.contains('remove-btn')){
-                        const fig = e.target.closest('figure');
-                        if(fig) fig.remove();
-                    }
-                });
-            })();
-        </script>
+        {{-- server-side upload handled by forms; no client-only add/remove JS here --}}
 
     </main>
     <footer>
