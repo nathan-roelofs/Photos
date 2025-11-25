@@ -1,1 +1,1 @@
-bonjour<?php /**PATH /Users/clemtitine/Desktop/Cours/MMI2/S3_P2/Photos/resources/views/index.blade.php ENDPATH**/ ?>
+bonjour la team<?php /**PATH /Users/clemtitine/Desktop/Cours/MMI2/S3_P2/Photos/resources/views/index.blade.php ENDPATH**/ ?>

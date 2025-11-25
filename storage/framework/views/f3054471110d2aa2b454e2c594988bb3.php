@@ -13,9 +13,9 @@
     <main>
         <!-- Contenu principal : liste d'albums, formulaires, etc. -->
     </main>
-s
+
     <footer>
         <!-- Pied de page -->
     </footer>
 </body>
-</html>
+</html><?php /**PATH C:\Users\Nathan\Documents\Cours\BUT_2\Photos\resources\views/index.blade.php ENDPATH**/ ?>
