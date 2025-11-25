@@ -21,8 +21,9 @@ use App\Models\Album;
 Route::get('/', function () {
     // load albums and their photos based on database dump structure
     // invert albums order (ascending)
-    $albums = Album::with('photos')->orderBy('id','asc')->get();
-    return view('index', compact('albums'));
+        $albums = Album::with(['photos.tags'])->orderBy('id','asc')->get();
+        $tags = App\Models\Tag::orderBy('nom')->get();
+    return view('index', compact('albums','tags'));
 });
 
 // album show route removed — album selection and display are handled inline on the index page
