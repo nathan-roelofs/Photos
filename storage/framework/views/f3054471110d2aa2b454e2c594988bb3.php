@@ -47,6 +47,10 @@
 
     .card figcaption{color:#111}
 
+    /* album nav buttons */
+    .album-btn{background:#fff;border:1px solid #eee;padding:.6rem 1rem;border-radius:8px;cursor:pointer}
+    .album-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
     @media (max-width:1100px){
         .gallery--columns{column-count:2}
     }
@@ -63,40 +67,58 @@
     </header>
 
     <main>
-        <!-- Controls: add images from files or by URL (server-side) -->
-        <section class="controls">
-            <form action="<?php echo e(route('photos.store')); ?>" method="POST" enctype="multipart/form-data" class="control-col">
-                <?php echo csrf_field(); ?>
-                <label for="fileInput">Ajouter des images (depuis votre ordinateur)</label>
-                <input id="fileInput" name="file[]" type="file" accept="image/*" multiple>
-                <div style="margin-top:.5rem;display:flex;gap:.5rem;align-items:center">
-                    <select name="album_id" aria-label="Choisir album" required style="padding:.4rem;border:1px solid #ddd;border-radius:6px">
-                        <option value="">— Aucun album —</option>
-                        <?php if(isset($albums)): ?>
-                            <?php $__currentLoopData = $albums; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $albumOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($albumOption->id); ?>"><?php echo e($albumOption->titre); ?> (<?php echo e($albumOption->photos->count()); ?>)</option>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        <?php endif; ?>
-                    </select>
-                    <button type="submit" class="btn">Téléverser</button>
-                </div>
-            </form>
+        <!-- Header / Navigation menu: choose an album -->
+        <nav id="siteNav" style="max-width:1100px;margin:1rem auto;padding:0 1rem;display:flex;justify-content:center">
+            <div id="albumNavWrapper" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+                <?php if(isset($albums) && $albums->count()): ?>
+                    <?php $__currentLoopData = $albums; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $album): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <button type="button" class="album-btn" data-index="<?php echo e($index); ?>" data-album-id="<?php echo e($album->id); ?>" aria-pressed="false"><?php echo e($album->titre); ?></button>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <button type="button" class="album-btn" data-index="all" style="margin-left:8px">Tous</button>
+                <?php else: ?>
+                    <div class="note">Aucun album trouvé dans la base.</div>
+                <?php endif; ?>
+            </div>
+        </nav>
 
-            <form action="<?php echo e(route('photos.store')); ?>" method="POST" class="control-col control-row">
-                <?php echo csrf_field(); ?>
-                <label for="urlInput" class="control-label">Ajouter par URL</label>
-                <input id="urlInput" name="url" type="url" placeholder="https://example.com/photo.jpg">
-                <select name="album_id" aria-label="Choisir album (URL)" required style="padding:.4rem;border:1px solid #ddd;border-radius:6px">
-                    <option value="">— Aucun album —</option>
-                    <?php if(isset($albums)): ?>
-                        <?php $__currentLoopData = $albums; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $albumOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option value="<?php echo e($albumOption->id); ?>"><?php echo e($albumOption->titre); ?> (<?php echo e($albumOption->photos->count()); ?>)</option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    <?php endif; ?>
-                </select>
-                <button type="submit" class="btn">Ajouter</button>
-            </form>
-        </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', function(){
+                const buttons = Array.from(document.querySelectorAll('.album-btn'));
+                const panels = Array.from(document.querySelectorAll('.album-panel'));
+                if(!buttons.length) return;
+
+                function showAll(){
+                    buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+                    const allBtn = buttons.find(b => b.dataset.index === 'all');
+                    if(allBtn) { allBtn.classList.add('active'); allBtn.setAttribute('aria-pressed','true'); }
+                    panels.forEach(p => p.style.display = '');
+                }
+
+                function setActiveIndex(index){
+                    buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+                    panels.forEach(p => p.style.display = 'none');
+
+                    const btn = buttons.find(b => b.dataset.index == index);
+                    if(btn){ btn.classList.add('active'); btn.setAttribute('aria-pressed','true'); }
+
+                    const panel = panels.find(p => p.dataset.index == index);
+                    if(panel){ panel.style.display = ''; panel.scrollIntoView({behavior:'smooth', block:'start'}); }
+                }
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = btn.dataset.index;
+                        if(idx === 'all') return showAll();
+                        setActiveIndex(idx);
+                    });
+                    btn.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); } });
+                });
+
+                // default selection: first button (unless there's an explicit 'all')
+                const firstBtn = buttons[0];
+                if(firstBtn && firstBtn.dataset.index === 'all') showAll(); else if(firstBtn) setActiveIndex(firstBtn.dataset.index);
+            });
+        </script>
 
         <?php if(session('success')): ?>
             <div style="max-width:1100px;margin:0 auto;padding:0 1rem 1rem;color:green;"><?php echo e(session('success')); ?></div>
@@ -106,52 +128,37 @@
             <div style="max-width:1100px;margin:0 auto;padding:0 1rem 1rem;color:#b91c1c;"><?php echo e($errors->first()); ?></div>
         <?php endif; ?>
 
-        <!-- Gallery grid -->
-        <section id="gallery" aria-label="Galerie">
-            <!-- Albums + their photos (DB) -->
-                <?php if(isset($albums) && $albums->count()): ?>
-                    <?php $__currentLoopData = $albums; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $album): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <section style="max-width:1100px;margin:0 auto 2rem;padding:0 1rem;">
-                            <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
-                                <div>
-                                    <h2 style="margin:0;font-size:1.1rem"><?php echo e($album->titre); ?></h2>
-                                    <div style="font-size:.9rem;color:var(--muted)">Créé: <?php echo e($album->creation); ?> — <?php echo e($album->photos->count()); ?> photos</div>
-                                </div>
-                                <div>
-                                    <!-- optional album actions could go here -->
-                                </div>
-                            </header>
+        <!-- Album panels (initially hidden; shown when a button is selected) -->
+        <section id="albumPanels" style="max-width:1100px;margin:0 auto;padding:1rem;">
+            <?php $__currentLoopData = $albums; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $album): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="album-panel" data-index="<?php echo e($index); ?>" style="display:none;margin-bottom:2rem;padding:0 1rem;">
+                    <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+                        <div>
+                            <h2 style="margin:0;font-size:1.1rem"><?php echo e($album->titre); ?></h2>
+                            <div style="font-size:.9rem;color:var(--muted)">Créé: <?php echo e($album->creation); ?> — <?php echo e($album->photos->count()); ?> photos</div>
+                        </div>
+                    </header>
 
-                            <?php if($album->photos->isEmpty()): ?>
-                                <div class="note">Aucune photo dans cet album.</div>
-                            <?php else: ?>
-                                <div class="gallery--columns">
-                                    <?php $__currentLoopData = $album->photos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $photo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <figure class="card" data-id="<?php echo e($photo->id); ?>">
-                                            <img src="<?php echo e($photo->data ? route('photos.image', $photo) : $photo->url); ?>" alt="<?php echo e($photo->titre); ?>">
-                                            <figcaption><?php echo e($photo->titre); ?></figcaption>
-
-                                            <form style="position:absolute;right:8px;top:8px;" method="POST" action="<?php echo e(route('photos.destroy', $photo)); ?>" onsubmit="return confirm('Supprimer cette photo ?');">
-                                                <?php echo csrf_field(); ?>
-                                                <?php echo method_field('DELETE'); ?>
-                                                <button class="remove-btn" type="submit">Suppr</button>
-                                            </form>
-                                        </figure>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </div>
-                            <?php endif; ?>
-                        </section>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                <?php else: ?>
-                    <div class="note">Aucun album trouvé dans la base.</div>
-                <?php endif; ?>
+                    <?php if($album->photos->isEmpty()): ?>
+                        <div class="note">Aucune photo dans cet album.</div>
+                    <?php else: ?>
+                        <div class="gallery--columns">
+                            <?php $__currentLoopData = $album->photos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $photo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <figure class="card" data-id="<?php echo e($photo->id); ?>">
+                                    <img src="<?php echo e($photo->data ? route('photos.image', $photo) : $photo->url); ?>" alt="<?php echo e($photo->titre); ?>">
+                                    <figcaption><?php echo e($photo->titre); ?></figcaption>
+                                    <form style="position:absolute;right:8px;top:8px;" method="POST" action="<?php echo e(route('photos.destroy', $photo)); ?>" onsubmit="return confirm('Supprimer cette photo ?');">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button class="remove-btn" type="submit">Suppr</button>
+                                    </form>
+                                </figure>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </section>
-
-        <!-- Server-side note: uploads persist to database/storage -->
-        <div class="note">Note: les formulaires enregistrent les photos dans la base (upload vers storage ou ajout par URL). Utilisez le select pour associer une photo à un album.</div>
-
-        
-
     </main>
     <footer>
         <!-- Pied de page -->
