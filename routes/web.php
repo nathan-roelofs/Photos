@@ -20,9 +20,12 @@ use App\Models\Album;
 
 Route::get('/', function () {
     // load albums and their photos based on database dump structure
-    $albums = Album::with('photos')->orderBy('id','desc')->get();
+    // invert albums order (ascending)
+    $albums = Album::with('photos')->orderBy('id','asc')->get();
     return view('index', compact('albums'));
 });
+
+// album show route removed — album selection and display are handled inline on the index page
 
 // photo persistence routes (store / destroy)
 Route::post('/photos', [PhotoController::class, 'store'])->name('photos.store');

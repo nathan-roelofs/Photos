@@ -47,6 +47,10 @@
 
     .card figcaption{color:#111}
 
+    /* album nav buttons */
+    .album-btn{background:#fff;border:1px solid #eee;padding:.6rem 1rem;border-radius:8px;cursor:pointer}
+    .album-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
     @media (max-width:1100px){
         .gallery--columns{column-count:2}
     }
@@ -63,40 +67,58 @@
     </header>
 
     <main>
-        <!-- Controls: add images from files or by URL (server-side) -->
-        <section class="controls">
-            <form action="{{ route('photos.store') }}" method="POST" enctype="multipart/form-data" class="control-col">
-                @csrf
-                <label for="fileInput">Ajouter des images (depuis votre ordinateur)</label>
-                <input id="fileInput" name="file[]" type="file" accept="image/*" multiple>
-                <div style="margin-top:.5rem;display:flex;gap:.5rem;align-items:center">
-                    <select name="album_id" aria-label="Choisir album" required style="padding:.4rem;border:1px solid #ddd;border-radius:6px">
-                        <option value="">— Aucun album —</option>
-                        @if(isset($albums))
-                            @foreach($albums as $albumOption)
-                                <option value="{{ $albumOption->id }}">{{ $albumOption->titre }} ({{ $albumOption->photos->count() }})</option>
-                            @endforeach
-                        @endif
-                    </select>
-                    <button type="submit" class="btn">Téléverser</button>
-                </div>
-            </form>
+        <!-- Header / Navigation menu: choose an album -->
+        <nav id="siteNav" style="max-width:1100px;margin:1rem auto;padding:0 1rem;display:flex;justify-content:center">
+            <div id="albumNavWrapper" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+                @if(isset($albums) && $albums->count())
+                    @foreach($albums as $index => $album)
+                        <button type="button" class="album-btn" data-index="{{ $index }}" data-album-id="{{ $album->id }}" aria-pressed="false">{{ $album->titre }}</button>
+                    @endforeach
+                    <button type="button" class="album-btn" data-index="all" style="margin-left:8px">Tous</button>
+                @else
+                    <div class="note">Aucun album trouvé dans la base.</div>
+                @endif
+            </div>
+        </nav>
 
-            <form action="{{ route('photos.store') }}" method="POST" class="control-col control-row">
-                @csrf
-                <label for="urlInput" class="control-label">Ajouter par URL</label>
-                <input id="urlInput" name="url" type="url" placeholder="https://example.com/photo.jpg">
-                <select name="album_id" aria-label="Choisir album (URL)" required style="padding:.4rem;border:1px solid #ddd;border-radius:6px">
-                    <option value="">— Aucun album —</option>
-                    @if(isset($albums))
-                        @foreach($albums as $albumOption)
-                            <option value="{{ $albumOption->id }}">{{ $albumOption->titre }} ({{ $albumOption->photos->count() }})</option>
-                        @endforeach
-                    @endif
-                </select>
-                <button type="submit" class="btn">Ajouter</button>
-            </form>
-        </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', function(){
+                const buttons = Array.from(document.querySelectorAll('.album-btn'));
+                const panels = Array.from(document.querySelectorAll('.album-panel'));
+                if(!buttons.length) return;
+
+                function showAll(){
+                    buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+                    const allBtn = buttons.find(b => b.dataset.index === 'all');
+                    if(allBtn) { allBtn.classList.add('active'); allBtn.setAttribute('aria-pressed','true'); }
+                    panels.forEach(p => p.style.display = '');
+                }
+
+                function setActiveIndex(index){
+                    buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+                    panels.forEach(p => p.style.display = 'none');
+
+                    const btn = buttons.find(b => b.dataset.index == index);
+                    if(btn){ btn.classList.add('active'); btn.setAttribute('aria-pressed','true'); }
+
+                    const panel = panels.find(p => p.dataset.index == index);
+                    if(panel){ panel.style.display = ''; panel.scrollIntoView({behavior:'smooth', block:'start'}); }
+                }
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = btn.dataset.index;
+                        if(idx === 'all') return showAll();
+                        setActiveIndex(idx);
+                    });
+                    btn.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); } });
+                });
+
+                // default selection: first button (unless there's an explicit 'all')
+                const firstBtn = buttons[0];
+                if(firstBtn && firstBtn.dataset.index === 'all') showAll(); else if(firstBtn) setActiveIndex(firstBtn.dataset.index);
+            });
+        </script>
 
         @if(session('success'))
             <div style="max-width:1100px;margin:0 auto;padding:0 1rem 1rem;color:green;">{{ session('success') }}</div>
@@ -106,52 +128,37 @@
             <div style="max-width:1100px;margin:0 auto;padding:0 1rem 1rem;color:#b91c1c;">{{ $errors->first() }}</div>
         @endif
 
-        <!-- Gallery grid -->
-        <section id="gallery" aria-label="Galerie">
-            <!-- Albums + their photos (DB) -->
-                @if(isset($albums) && $albums->count())
-                    @foreach($albums as $album)
-                        <section style="max-width:1100px;margin:0 auto 2rem;padding:0 1rem;">
-                            <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
-                                <div>
-                                    <h2 style="margin:0;font-size:1.1rem">{{ $album->titre }}</h2>
-                                    <div style="font-size:.9rem;color:var(--muted)">Créé: {{ $album->creation }} — {{ $album->photos->count() }} photos</div>
-                                </div>
-                                <div>
-                                    <!-- optional album actions could go here -->
-                                </div>
-                            </header>
+        <!-- Album panels (initially hidden; shown when a button is selected) -->
+        <section id="albumPanels" style="max-width:1100px;margin:0 auto;padding:1rem;">
+            @foreach($albums as $index => $album)
+                <div class="album-panel" data-index="{{ $index }}" style="display:none;margin-bottom:2rem;padding:0 1rem;">
+                    <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+                        <div>
+                            <h2 style="margin:0;font-size:1.1rem">{{ $album->titre }}</h2>
+                            <div style="font-size:.9rem;color:var(--muted)">Créé: {{ $album->creation }} — {{ $album->photos->count() }} photos</div>
+                        </div>
+                    </header>
 
-                            @if($album->photos->isEmpty())
-                                <div class="note">Aucune photo dans cet album.</div>
-                            @else
-                                <div class="gallery--columns">
-                                    @foreach($album->photos as $photo)
-                                        <figure class="card" data-id="{{ $photo->id }}">
-                                            <img src="{{ $photo->data ? route('photos.image', $photo) : $photo->url }}" alt="{{ $photo->titre }}">
-                                            <figcaption>{{ $photo->titre }}</figcaption>
-
-                                            <form style="position:absolute;right:8px;top:8px;" method="POST" action="{{ route('photos.destroy', $photo) }}" onsubmit="return confirm('Supprimer cette photo ?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="remove-btn" type="submit">Suppr</button>
-                                            </form>
-                                        </figure>
-                                    @endforeach
-                                </div>
-                            @endif
-                        </section>
-                    @endforeach
-                @else
-                    <div class="note">Aucun album trouvé dans la base.</div>
-                @endif
+                    @if($album->photos->isEmpty())
+                        <div class="note">Aucune photo dans cet album.</div>
+                    @else
+                        <div class="gallery--columns">
+                            @foreach($album->photos as $photo)
+                                <figure class="card" data-id="{{ $photo->id }}">
+                                    <img src="{{ $photo->data ? route('photos.image', $photo) : $photo->url }}" alt="{{ $photo->titre }}">
+                                    <figcaption>{{ $photo->titre }}</figcaption>
+                                    <form style="position:absolute;right:8px;top:8px;" method="POST" action="{{ route('photos.destroy', $photo) }}" onsubmit="return confirm('Supprimer cette photo ?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="remove-btn" type="submit">Suppr</button>
+                                    </form>
+                                </figure>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endforeach
         </section>
-
-        <!-- Server-side note: uploads persist to database/storage -->
-        <div class="note">Note: les formulaires enregistrent les photos dans la base (upload vers storage ou ajout par URL). Utilisez le select pour associer une photo à un album.</div>
-
-        {{-- server-side upload handled by forms; no client-only add/remove JS here --}}
-
     </main>
     <footer>
         <!-- Pied de page -->
