@@ -147,9 +147,6 @@
                 @endif
         </section>
 
-        <!-- Server-side note: uploads persist to database/storage -->
-        <div class="note">Note: les formulaires enregistrent les photos dans la base (upload vers storage ou ajout par URL). Utilisez le select pour associer une photo à un album.</div>
-
         {{-- server-side upload handled by forms; no client-only add/remove JS here --}}
 
     </main>
