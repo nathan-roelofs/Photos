@@ -159,6 +159,7 @@
                 </div>
             @endforeach
         </section>
+
     </main>
     <footer>
         <!-- Pied de page -->
