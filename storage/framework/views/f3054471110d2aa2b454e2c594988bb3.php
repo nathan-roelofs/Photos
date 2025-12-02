@@ -113,16 +113,17 @@
         max-width:1200px;
         margin:0 auto;
         padding:1rem;
-        column-gap:20px;
-        column-count:3;
+        display:grid;
+        grid-template-columns:repeat(3, 1fr);
+        gap:20px;
     }
 
     @media(max-width:1024px){
-        .gallery--columns{ column-count:2; }
+        .gallery--columns{ grid-template-columns:repeat(2, 1fr); }
     }
 
     @media(max-width:640px){
-        .gallery--columns{ column-count:1; }
+        .gallery--columns{ grid-template-columns:1fr; }
     }
 
     .card{
@@ -131,7 +132,7 @@
         width:100%;
         break-inside:avoid;
         -webkit-column-break-inside:avoid;
-        margin:0 0 20px;
+        margin:0;
         border-radius:12px;
         overflow:hidden;
         background:var(--card-bg);
