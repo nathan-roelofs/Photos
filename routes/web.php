@@ -32,3 +32,7 @@ Route::get('/', function () {
 Route::post('/photos', [PhotoController::class, 'store'])->name('photos.store');
 Route::get('/photos/{photo}/image', [PhotoController::class, 'image'])->name('photos.image');
 Route::delete('/photos/{photo}', [PhotoController::class, 'destroy'])->name('photos.destroy');
+
+// attach/detach tags to photos
+Route::post('/photos/{photo}/tags', [PhotoController::class, 'attachTag'])->name('photos.attachTag');
+Route::delete('/photos/{photo}/tags/{tag}', [PhotoController::class, 'detachTag'])->name('photos.detachTag');
