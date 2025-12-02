@@ -5,22 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestionnaire d'albums - Accueil</title>
     <style>
+    @font-face {
+        font-family: 'Bimbo';
+        src: url('/fonts/Bimbo Trial.ttf') format('truetype');
+        font-weight: 400;
+    }
+
+    @font-face {
+        font-family: 'Bimbo Bold';
+        src: url('/fonts/Bimbo Jumbo Trial.ttf') format('truetype');
+        font-weight: 700;
+    }
+
+    @font-face {
+        font-family: 'Bimbo Sharpie';
+        src: url('/fonts/Bimbo Sharpie Trial.ttf') format('truetype');
+        font-weight: 400;
+    }
+
     :root{
-        --accent:#ff6b6b;
-        --accent-dark:#ee5a52;
-        --muted:#a0aec0;
-        --card-bg:#1a202c;
-        --page-bg:#0f1419;
-        --border:#2d3748;
-        --text-primary:#e2e8f0;
-        --text-secondary:#cbd5e0;
+        --accent:#10b981;
+        --accent-dark:#059669;
+        --accent-light:#6ee7b7;
+        --muted:#6b7280;
+        --card-bg:#ffffff;
+        --page-bg:#f3f4f6;
+        --border:#e5e7eb;
+        --text-primary:#1f2937;
+        --text-secondary:#4b5563;
     }
     html,body{height:100%;}
     
 
     body{
         font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-        background:var(--page-bg);
+        background:linear-gradient(135deg, #f3f4f6 0%, #ecfdf5 100%);
         color:var(--text-primary);
         margin:0;
         padding:0;
@@ -29,14 +48,15 @@
     header{
         padding:24px 16px;
         border-bottom:1px solid var(--border);
-        background:linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-        box-shadow:0 4px 12px rgba(0,0,0,0.3);
+        background:linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+        box-shadow:0 2px 8px rgba(0,0,0,0.06);
     }
     header h1{
         margin:0;
         font-size:28px;
         font-weight:700;
-        background:linear-gradient(135deg, #ff6b6b, #ff8787);
+        font-family:'Bimbo Bold', sans-serif;
+        background:linear-gradient(135deg, #10b981, #059669);
         -webkit-background-clip:text;
         -webkit-text-fill-color:transparent;
         background-clip:text;
@@ -55,7 +75,7 @@
         background:var(--card-bg);
         border:1px solid var(--border);
         border-radius:12px;
-        box-shadow:0 8px 24px rgba(0,0,0,0.4);
+        box-shadow:0 2px 8px rgba(0,0,0,0.06);
     }
 
     .controls label{
@@ -74,7 +94,7 @@
         padding:10px 12px;
         border:1px solid var(--border);
         border-radius:8px;
-        background:#0f1419;
+        background:#ffffff;
         color:var(--text-primary);
         font-size:14px;
         transition:all 0.2s ease;
@@ -85,7 +105,7 @@
     .controls select:focus{
         outline:none;
         border-color:var(--accent);
-        box-shadow:0 0 0 3px rgba(255,107,107,0.1);
+        box-shadow:0 0 0 3px rgba(16,185,129,0.1);
     }
 
     .controls .btn{
@@ -97,12 +117,12 @@
         cursor:pointer;
         font-weight:600;
         transition:all 0.3s ease;
-        box-shadow:0 4px 12px rgba(255,107,107,0.3);
+        box-shadow:0 2px 8px rgba(16,185,129,0.2);
     }
 
     .controls .btn:hover{
         transform:translateY(-2px);
-        box-shadow:0 6px 16px rgba(255,107,107,0.4);
+        box-shadow:0 4px 12px rgba(16,185,129,0.3);
     }
 
     .controls .btn:active{
@@ -135,24 +155,25 @@
         margin:0;
         border-radius:12px;
         overflow:hidden;
-        background:var(--card-bg);
+        background:linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
         border:1px solid var(--border);
-        box-shadow:0 8px 24px rgba(0,0,0,0.4);
+        box-shadow:0 2px 8px rgba(0,0,0,0.08);
         transition:all 0.3s ease;
         cursor:pointer;
     }
 
     .card:hover{
         transform:translateY(-4px);
-        box-shadow:0 12px 32px rgba(255,107,107,0.2);
-        border-color:var(--accent);
+        box-shadow:0 8px 20px rgba(16,185,129,0.15);
+        border-color:var(--accent-light);
     }
 
     .card img{
         width:100%;
-        height:auto;
+        height:280px;
+        object-fit:cover;
         display:block;
-        background:linear-gradient(135deg, #2d3748, #1a202c);
+        background:linear-gradient(135deg, #e0f2fe, #f0fdf4);
     }
 
     .card figcaption{
@@ -160,14 +181,14 @@
         font-size:14px;
         color:var(--text-secondary);
         font-weight:500;
-        background:rgba(0,0,0,0.2);
+        background:#fafafa;
     }
 
     .remove-btn{
         position:absolute;
         right:8px;
         top:8px;
-        background:rgba(255,107,107,0.9);
+        background:linear-gradient(135deg, var(--accent), var(--accent-dark));
         color:#fff;
         border:none;
         padding:6px 10px;
@@ -179,8 +200,9 @@
     }
 
     .remove-btn:hover{
-        background:var(--accent);
-        box-shadow:0 4px 12px rgba(255,107,107,0.4);
+        background:var(--accent-dark);
+        box-shadow:0 4px 12px rgba(16,185,129,0.3);
+        transform:scale(1.05);
     }
 
     .note{
@@ -190,13 +212,13 @@
         color:var(--muted);
         font-size:14px;
     }
-
     footer{
         padding:24px;
         color:var(--muted);
         text-align:center;
         border-top:1px solid var(--border);
         margin-top:48px;
+        background:linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
     }
 
     .control-col{flex:1;min-width:240px}
@@ -215,15 +237,16 @@
     }
 
     .album-btn:hover{
-        border-color:var(--accent);
+        border-color:var(--accent-light);
         color:var(--text-primary);
+        background:#f0fdf4;
     }
 
     .album-btn.active{
         background:linear-gradient(135deg, var(--accent), var(--accent-dark));
         color:#fff;
         border-color:var(--accent);
-        box-shadow:0 4px 12px rgba(255,107,107,0.3);
+        box-shadow:0 2px 8px rgba(16,185,129,0.2);
     }
 
     .tag-btn{
@@ -239,15 +262,16 @@
     }
 
     .tag-btn:hover{
-        border-color:var(--accent);
+        border-color:var(--accent-light);
         color:var(--accent);
+        background:#f0fdf4;
     }
 
     .tag-btn.active{
-        background:#1f2937;
-        color:var(--accent);
+        background:linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color:var(--accent-dark);
         border-color:var(--accent);
-        box-shadow:0 0 8px rgba(255,107,107,0.2);
+        box-shadow:0 0 8px rgba(16,185,129,0.2);
     }
 
     #siteNav{
@@ -274,16 +298,19 @@
     .album-panel{
         margin-bottom:3rem;
         padding:24px;
-        background:var(--card-bg);
+        background:linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
         border:1px solid var(--border);
         border-radius:12px;
-        box-shadow:0 8px 24px rgba(0,0,0,0.4);
+        box-shadow:0 2px 8px rgba(0,0,0,0.06);
     }
 
     .album-panel h2{
-        margin:0 0 4px 0;
-        font-size:24px;
+        margin:0;
+        padding:0;
+        font-size:28px;
+        line-height:1.2;
         color:var(--text-primary);
+        font-family:'Bimbo Bold', sans-serif;
     }
 
     .album-tagNav{
@@ -294,12 +321,13 @@
     }
 
     #photoModal{
-        background:rgba(0,0,0,0.8);
+        background:rgba(0,0,0,0.5);
     }
 
     #photoModal > div{
         background:var(--card-bg);
         border:1px solid var(--border);
+        box-shadow:0 20px 60px rgba(0,0,0,0.15);
     }
 
     #photoModal .modal-title{
@@ -356,7 +384,7 @@
 
                 <div style="display:none;flex-direction:column;margin-left:8px" id="albumSortContainer">
                     <label style="font-size:.85rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Trier albums</label>
-                    <select id="albumSort" style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#0f1419;color:var(--text-primary)">
+                    <select id="albumSort" style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#ffffff;color:var(--text-primary)">
                         <option value="creation_desc">Date création (récent → ancien)</option>
                         <option value="creation_asc">Date création (ancien → récent)</option>
                         <option value="title_asc">Titre (A → Z)</option>
@@ -378,7 +406,7 @@
                         <?php echo csrf_field(); ?>
                         <div style="margin-bottom:20px">
                             <label style="display:block;margin-bottom:8px;color:var(--text-primary);font-weight:600">Album *</label>
-                            <select name="album_id" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#0f1419;color:var(--text-primary)">
+                            <select name="album_id" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#ffffff;color:var(--text-primary);box-sizing:border-box">
                                 <?php $__currentLoopData = $albums; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $alb): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($alb->id); ?>"><?php echo e($alb->titre); ?></option>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -387,12 +415,12 @@
 
                         <div style="margin-bottom:20px">
                             <label style="display:block;margin-bottom:8px;color:var(--text-primary);font-weight:600">Titre (optionnel)</label>
-                            <input type="text" name="titre" placeholder="Titre pour la photo" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#0f1419;color:var(--text-primary);box-sizing:border-box">
+                            <input type="text" name="titre" placeholder="Titre pour la photo" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#ffffff;color:var(--text-primary);box-sizing:border-box">
                         </div>
 
                         <div style="margin-bottom:20px">
                             <label style="display:block;margin-bottom:8px;color:var(--text-primary);font-weight:600">URL de l'image *</label>
-                            <input type="url" name="url" placeholder="https://example.com/image.jpg" required style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#0f1419;color:var(--text-primary);box-sizing:border-box">
+                            <input type="url" name="url" placeholder="https://example.com/image.jpg" required style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#ffffff;color:var(--text-primary);box-sizing:border-box">
                         </div>
 
                         <div style="display:flex;gap:10px;justify-content:flex-end">
@@ -687,11 +715,11 @@
         <!-- Album panels (initially hidden; shown when a button is selected) -->
         <section id="albumPanels" style="max-width:1100px;margin:0 auto;padding:1rem;">
             <?php $__currentLoopData = $albums; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $album): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <div class="album-panel" data-index="<?php echo e($index); ?>" data-album-id="<?php echo e($album->id); ?>" data-creation="<?php echo e($album->creation); ?>" style="display:none;margin-bottom:2rem;padding:0 1rem;">
-                    <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
-                        <div style="display:flex;flex-direction:column;gap:6px">
-                            <div style="display:flex;align-items:center;gap:.6rem">
-                                <h2 style="margin:0;font-size:1.1rem"><?php echo e($album->titre); ?></h2>
+                <div class="album-panel" data-index="<?php echo e($index); ?>" data-album-id="<?php echo e($album->id); ?>" data-creation="<?php echo e($album->creation); ?>" style="display:none;margin-bottom:2rem;padding:0;overflow:hidden;">
+                    <header style="display:flex;align-items:center;justify-content:space-between;padding:24px;border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;">
+                        <div style="display:flex;flex-direction:column;gap:8px">
+                            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+                                <h2 style="margin:0"><?php echo e($album->titre); ?></h2>
 
                                 <?php
                                     // collect tags used by this album's photos
@@ -699,7 +727,7 @@
                                 ?>
 
                                 <?php if($albumTags->count()): ?>
-                                    <div class="album-tagNav" style="display:flex;gap:.35rem;align-items:center;">
+                                    <div class="album-tagNav" style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
                                         <button type="button" class="tag-btn" data-tag-id="all" aria-pressed="false">Tous</button>
                                         <?php $__currentLoopData = $albumTags; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <button type="button" class="tag-btn" data-tag-id="<?php echo e($tag->id); ?>" aria-pressed="false"><?php echo e($tag->nom); ?></button>
@@ -713,9 +741,9 @@
                     </header>
 
                     <?php if($album->photos->isEmpty()): ?>
-                        <div class="note">Aucune photo dans cet album.</div>
+                        <div class="note" style="padding:0 1rem 2rem">Aucune photo dans cet album.</div>
                     <?php else: ?>
-                        <div class="gallery--columns">
+                        <div class="gallery--columns" style="padding:1rem">
                             <?php $__currentLoopData = $album->photos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $photo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <figure class="card" data-id="<?php echo e($photo->id); ?>" data-tags="<?php echo e($photo->tags->pluck('id')->join(',')); ?>" data-title="<?php echo e(htmlspecialchars($photo->titre, ENT_QUOTES)); ?>" data-note="<?php echo e($photo->note ?? 0); ?>">
                                     <img src="<?php echo e($photo->data ? route('photos.image', $photo) : $photo->url); ?>" alt="<?php echo e($photo->titre); ?>">
