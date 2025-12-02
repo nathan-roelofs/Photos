@@ -5,354 +5,235 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestionnaire d'albums - Accueil</title>
     <style>
+
     @font-face {
         font-family: 'Bimbo';
         src: url('/fonts/Bimbo Trial.ttf') format('truetype');
         font-weight: 400;
     }
-
     @font-face {
         font-family: 'Bimbo Bold';
         src: url('/fonts/Bimbo Jumbo Trial.ttf') format('truetype');
         font-weight: 700;
     }
-
     @font-face {
         font-family: 'Bimbo Sharpie';
         src: url('/fonts/Bimbo Sharpie Trial.ttf') format('truetype');
         font-weight: 400;
     }
-
-    :root{
-        --accent:#10b981;
-        --accent-dark:#059669;
-        --accent-light:#6ee7b7;
-        --muted:#6b7280;
-        --card-bg:#ffffff;
-        --page-bg:#f3f4f6;
-        --border:#e5e7eb;
-        --text-primary:#1f2937;
-        --text-secondary:#4b5563;
+    :root {
+        --accent: #27ae60;
+        --accent-dark: #219150;
+        --accent-light: #a8e6cf;
+        --muted: #7b8a7f;
+        --card-bg: #fff;
+        --page-bg: #f7faf7;
+        --border: #e0e7e0;
+        --text-primary: #234d20;
+        --text-secondary: #4b6e36;
+        --family-bg: #eafbe7;
     }
-    html,body{height:100%;}
-    
-
-    body{
-        font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-        background:linear-gradient(135deg, #f3f4f6 0%, #ecfdf5 100%);
-        color:var(--text-primary);
-        margin:0;
-        padding:0;
+    html, body { height: 100%; }
+    body {
+        font-family: 'Segoe UI', 'Bimbo', Arial, sans-serif;
+        background: linear-gradient(135deg, var(--page-bg) 0%, var(--family-bg) 100%);
+        color: var(--text-primary);
+        margin: 0;
+        padding: 0;
     }
-
-    header{
-        padding:24px 16px;
-        border-bottom:1px solid var(--border);
-        background:linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-        box-shadow:0 2px 8px rgba(0,0,0,0.06);
+    header {
+        padding: 24px 16px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(135deg, #fff 0%, var(--family-bg) 100%);
+        box-shadow: 0 2px 8px rgba(39, 174, 96, 0.08);
     }
-    header h1{
-        margin:0;
-        font-size:28px;
-        font-weight:700;
-        font-family:'Bimbo Bold', sans-serif;
-        background:linear-gradient(135deg, #10b981, #059669);
-        -webkit-background-clip:text;
-        -webkit-text-fill-color:transparent;
-        background-clip:text;
+    header h1 {
+        margin: 0;
+        font-size: 2.2rem;
+        font-weight: 700;
+        font-family: 'Bimbo Bold', 'Segoe UI', Arial, sans-serif;
+        color: var(--accent-dark);
+        letter-spacing: 1px;
     }
-
-    main{padding:32px 12px}
-
-    .controls{
-        max-width:1200px;
-        margin:0 auto 2rem;
-        padding:24px;
-        display:flex;
-        gap:1.5rem;
-        align-items:flex-start;
-        flex-wrap:wrap;
-        background:var(--card-bg);
-        border:1px solid var(--border);
-        border-radius:12px;
-        box-shadow:0 2px 8px rgba(0,0,0,0.06);
+    main { padding: 32px 12px; }
+    .controls {
+        max-width: 1200px;
+        margin: 0 auto 2rem;
+        padding: 24px;
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(39, 174, 96, 0.10);
     }
-
-    .controls label{
-        display:block;
-        font-size:13px;
-        margin-bottom:8px;
-        color:var(--muted);
-        font-weight:600;
-        text-transform:uppercase;
-        letter-spacing:0.5px;
+    .controls label {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
-
     .controls input[type='url'],
     .controls input[type='text'],
-    .controls select{
-        padding:10px 12px;
-        border:1px solid var(--border);
-        border-radius:8px;
-        background:#ffffff;
-        color:var(--text-primary);
-        font-size:14px;
-        transition:all 0.2s ease;
+    .controls select {
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--text-primary);
+        font-size: 15px;
+        transition: all 0.2s ease;
     }
-
     .controls input[type='url']:focus,
     .controls input[type='text']:focus,
-    .controls select:focus{
-        outline:none;
-        border-color:var(--accent);
-        box-shadow:0 0 0 3px rgba(16,185,129,0.1);
+    .controls select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.12);
     }
-
-    .controls .btn{
-        padding:10px 24px;
-        background:linear-gradient(135deg, var(--accent), var(--accent-dark));
-        color:white;
-        border-radius:8px;
-        border:none;
-        cursor:pointer;
-        font-weight:600;
-        transition:all 0.3s ease;
-        box-shadow:0 2px 8px rgba(16,185,129,0.2);
+    .controls .btn {
+        padding: 12px 28px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+        color: white;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        font-family: 'Bimbo Bold', 'Segoe UI', Arial, sans-serif;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 12px rgba(39, 174, 96, 0.18);
     }
-
-    .controls .btn:hover{
-        transform:translateY(-2px);
-        box-shadow:0 4px 12px rgba(16,185,129,0.3);
+    .controls .btn:hover {
+        transform: translateY(-2px) scale(1.04);
+        box-shadow: 0 4px 16px rgba(39, 174, 96, 0.22);
     }
-
-    .controls .btn:active{
-        transform:translateY(0);
+    .controls .btn:active {
+        transform: translateY(0);
     }
-
-    .gallery--columns{
-        max-width:1200px;
-        margin:0 auto;
-        padding:1rem;
-        display:grid;
-        grid-template-columns:repeat(3, 1fr);
-        gap:20px;
+    .gallery--columns {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
     }
-
-    @media(max-width:1024px){
-        .gallery--columns{ grid-template-columns:repeat(2, 1fr); }
+    @media (max-width: 1024px) {
+        .gallery--columns { grid-template-columns: repeat(2, 1fr); }
     }
-
-    @media(max-width:640px){
-        .gallery--columns{ grid-template-columns:1fr; }
+    @media (max-width: 640px) {
+        .gallery--columns { grid-template-columns: 1fr; }
     }
-
-    .card{
-        position:relative;
-        display:inline-block;
-        width:100%;
-        break-inside:avoid;
-        -webkit-column-break-inside:avoid;
-        margin:0;
-        border-radius:12px;
-        overflow:hidden;
-        background:linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-        border:1px solid var(--border);
-        box-shadow:0 2px 8px rgba(0,0,0,0.08);
-        transition:all 0.3s ease;
-        cursor:pointer;
+    .card {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        break-inside: avoid;
+        margin: 0;
+        border-radius: 16px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #fff 0%, var(--family-bg) 100%);
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 12px rgba(39, 174, 96, 0.10);
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
-
-    .card:hover{
-        transform:translateY(-4px);
-        box-shadow:0 8px 20px rgba(16,185,129,0.15);
-        border-color:var(--accent-light);
+    .card:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 8px 24px rgba(39, 174, 96, 0.18);
+        border-color: var(--accent-light);
     }
-
-    .card img{
-        width:100%;
-        height:280px;
-        object-fit:cover;
-        display:block;
-        background:linear-gradient(135deg, #e0f2fe, #f0fdf4);
+    .card img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        display: block;
+        background: linear-gradient(135deg, #eafbe7, #a8e6cf);
     }
-
-    .card figcaption{
-        padding:12px;
-        font-size:14px;
-        color:var(--text-secondary);
-        font-weight:500;
-        background:#fafafa;
+    .card figcaption {
+        padding: 14px;
+        font-size: 15px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        background: #f7faf7;
     }
-
-    .remove-btn{
-        position:absolute;
-        right:8px;
-        top:8px;
-        background:linear-gradient(135deg, var(--accent), var(--accent-dark));
-        color:#fff;
-        border:none;
-        padding:6px 10px;
-        border-radius:6px;
-        cursor:pointer;
-        font-size:12px;
-        font-weight:600;
-        transition:all 0.2s ease;
+    .remove-btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 700;
+        transition: all 0.2s ease;
     }
-
-    .remove-btn:hover{
-        background:var(--accent-dark);
-        box-shadow:0 4px 12px rgba(16,185,129,0.3);
-        transform:scale(1.05);
+    .remove-btn:hover {
+        background: var(--accent-dark);
+        box-shadow: 0 4px 16px rgba(39, 174, 96, 0.22);
+        transform: scale(1.08);
     }
-
-    .note{
-        max-width:1200px;
-        margin:0 auto;
-        padding:0 1rem 2rem;
-        color:var(--muted);
-        font-size:14px;
+    .note {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem 2rem;
+        color: var(--muted);
+        font-size: 15px;
     }
-    footer{
-        padding:24px;
-        color:var(--muted);
-        text-align:center;
-        border-top:1px solid var(--border);
-        margin-top:48px;
-        background:linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+    footer {
+        padding: 24px;
+        color: var(--muted);
+        text-align: center;
+        border-top: 1px solid var(--border);
+        margin-top: 48px;
+        background: linear-gradient(135deg, #fff 0%, var(--family-bg) 100%);
     }
-
-    .control-col{flex:1;min-width:240px}
-    .control-row{display:flex;gap:.5rem;align-items:center}
-    .control-label{width:120px;display:inline-block;font-weight:600}
-
-    .album-btn{
-        background:var(--card-bg);
-        border:2px solid var(--border);
-        padding:10px 16px;
-        border-radius:8px;
-        cursor:pointer;
-        font-weight:600;
-        color:var(--text-secondary);
-        transition:all 0.2s ease;
+    /* Boutons d'albums et tags */
+    .album-btn, .tag-btn {
+        background: var(--card-bg);
+        border: 2px solid var(--border);
+        padding: 10px 18px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+        font-family: 'Bimbo', 'Segoe UI', Arial, sans-serif;
     }
-
-    .album-btn:hover{
-        border-color:var(--accent-light);
-        color:var(--text-primary);
-        background:#f0fdf4;
+    .album-btn:hover, .tag-btn:hover {
+        border-color: var(--accent-light);
+        color: var(--accent);
+        background: #eafbe7;
     }
-
-    .album-btn.active{
-        background:linear-gradient(135deg, var(--accent), var(--accent-dark));
-        color:#fff;
-        border-color:var(--accent);
-        box-shadow:0 2px 8px rgba(16,185,129,0.2);
+    .album-btn.active, .tag-btn.active {
+        background: linear-gradient(135deg, var(--accent-light), var(--accent));
+        color: #fff;
+        border-color: var(--accent);
+        box-shadow: 0 2px 12px rgba(39, 174, 96, 0.18);
     }
-
-    .tag-btn{
-        background:var(--card-bg);
-        border:1px solid var(--border);
-        padding:6px 12px;
-        border-radius:20px;
-        cursor:pointer;
-        font-size:12px;
-        color:var(--text-secondary);
-        font-weight:500;
-        transition:all 0.2s ease;
+    /* Scrollbar stylée verte et douce */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
     }
-
-    .tag-btn:hover{
-        border-color:var(--accent-light);
-        color:var(--accent);
-        background:#f0fdf4;
+    ::-webkit-scrollbar-track {
+        background: var(--page-bg);
     }
-
-    .tag-btn.active{
-        background:linear-gradient(135deg, #d1fae5, #a7f3d0);
-        color:var(--accent-dark);
-        border-color:var(--accent);
-        box-shadow:0 0 8px rgba(16,185,129,0.2);
+    ::-webkit-scrollbar-thumb {
+        background: var(--accent-light);
+        border-radius: 4px;
     }
-
-    #siteNav{
-        max-width:1200px;
-        margin:1.5rem auto;
-        padding:0 1rem;
-        display:flex;
-        justify-content:center;
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent);
     }
-
-    #albumNavWrapper{
-        display:flex;
-        gap:8px;
-        flex-wrap:wrap;
-        align-items:center;
-    }
-
-    #albumPanels{
-        max-width:1200px;
-        margin:0 auto;
-        padding:1rem;
-    }
-
-    .album-panel{
-        margin-bottom:3rem;
-        padding:24px;
-        background:linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-        border:1px solid var(--border);
-        border-radius:12px;
-        box-shadow:0 2px 8px rgba(0,0,0,0.06);
-    }
-
-    .album-panel h2{
-        margin:0;
-        padding:0;
-        font-size:28px;
-        line-height:1.2;
-        color:var(--text-primary);
-        font-family:'Bimbo Bold', sans-serif;
-    }
-
-    .album-tagNav{
-        display:flex;
-        gap:8px;
-        align-items:center;
-        flex-wrap:wrap;
-    }
-
-    #photoModal{
-        background:rgba(0,0,0,0.5);
-    }
-
-    #photoModal > div{
-        background:var(--card-bg);
-        border:1px solid var(--border);
-        box-shadow:0 20px 60px rgba(0,0,0,0.15);
-    }
-
-    #photoModal .modal-title{
-        color:var(--text-primary);
-    }
-
-    /* Scrollbar styling */
-    ::-webkit-scrollbar{
-        width:8px;
-        height:8px;
-    }
-
-    ::-webkit-scrollbar-track{
-        background:var(--page-bg);
-    }
-
-    ::-webkit-scrollbar-thumb{
-        background:var(--border);
-        border-radius:4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover{
-        background:var(--accent);
-    }
-
     </style>
 </head>
 <body>
